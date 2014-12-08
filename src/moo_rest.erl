@@ -12,6 +12,8 @@
 	media_type
 }).
 
+render_error(unauthorized, _, Req, State) ->
+	{<<>>, Req, State};
 render_error(Error, {<<"text">>, <<"html">>, _}, Req, State) ->
 	{io_lib:format("~p", [Error]), Req, State};
 render_error(Error, {<<"application">>, <<"json">>, _}, Req, State) ->
@@ -167,7 +169,7 @@ authorize(Req, #state{method = Method,
 			respond(403, Req2, State#state{handler_state=NewHandlerState, error=forbidden});
 		{{unauthorized, AuthHeader}, Req2, NewHandlerState} ->
 			Req3 = cowboy_req:set_resp_header(<<"www-authenticate">>, AuthHeader, Req2),
-			respond(401, Req3, State#state{handler_state=NewHandlerState});
+			respond(401, Req3, State#state{handler_state=NewHandlerState, error=unauthorized});
 		{halt, Req2} ->
 			stop(Req2, State)
 	catch
