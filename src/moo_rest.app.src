@@ -1,0 +1,11 @@
+{application, moo_rest, [
+	{description, "Another REST handler for cowboy"},
+	{vsn, "0.0.1"},
+	{registered, []},
+	{applications, [
+		kernel,
+		stdlib,
+		cowboy
+	]},
+	{env, []}
+]}.
