@@ -98,17 +98,17 @@ choose_media_type(AcceptTypes, Req, #state{handler=Handler} = State) ->
 			error_terminate({Class, Error}, content_types_provided, Req, State)
 	end.
 
-choose_media_type([], _) -> none;
-choose_media_type([Type | Rest], AcceptTypes) ->
-	case match_media_type(Type, AcceptTypes) of
-		no_match -> choose_media_type(Rest, AcceptTypes);
+choose_media_type(_, []) -> none;
+choose_media_type(CTP, [{AcceptType, _, _} | Rest]) ->
+	case match_media_type(CTP, AcceptType) of
+		no_match -> choose_media_type(CTP, Rest);
 		MatchedType -> MatchedType
 	end.
 
-match_media_type(_, []) -> no_match;
-match_media_type(TypeA, [{TypeB, _, _} | Rest]) ->
+match_media_type([], _) -> no_match;
+match_media_type([TypeA | Rest], TypeB) ->
 	case resolve_media_type(TypeA, TypeB) of
-		no_solution -> match_media_type(TypeA, Rest);
+		no_solution -> match_media_type(Rest, TypeB);
 		Type -> Type
 	end.
 
