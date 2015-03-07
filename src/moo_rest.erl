@@ -192,6 +192,10 @@ process_request(Method, Req, #state{handler=Handler, handler_state=HandlerState}
 		{{moved_temporarily, NewUrl}, Req2, NewHandlerState} ->
 			Req3 = cowboy_req:set_resp_header(<<"location">>, NewUrl, Req2),
 			respond(307, Req3, State#state{handler_state=NewHandlerState});
+		{error, Req2, NewHandlerState} ->
+			respond(400, Req2, State#state{handler_state=NewHandlerState, error=bad_request});
+		{{error, Reason}, Req2, NewHandlerState} ->
+			respond(400, Req2, State#state{handler_state=NewHandlerState, error=Reason});
 		{halt, Req2, NewHandlerState} ->
 			terminate(Req2, State#state{handler_state=NewHandlerState})
 	catch
