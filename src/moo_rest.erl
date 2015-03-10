@@ -260,7 +260,7 @@ accept_resource(Method, Req, #state{handler=Handler, handler_state=HandlerState}
 		{{created, Url}, Req2, NewHandlerState} when Method =/= patch ->
 			Req3 = cowboy_req:set_resp_header(<<"location">>, Url, Req2),
 			respond(201, Req3, State#state{handler_state=NewHandlerState});
-		{conflict, Req2, NewHandlerState} when Method =:= put ->
+		{conflict, Req2, NewHandlerState} when Method =:= put; Method =:= post ->
 			respond(409, Req2, State#state{handler_state=NewHandlerState, error=conflict});
 		{unsupported, Req2, NewHandlerState} ->
 			respond(415, Req2, State#state{handler_state=NewHandlerState, error=unsupported});
